@@ -1,0 +1,18 @@
+import { useEffect } from 'react';
+
+const Toast = ({ message, type = 'success', onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3500);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className={`toast toast-${type}`} role="alert" aria-live="assertive">
+      <span className="toast-icon">{type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span>
+      <span className="toast-message">{message}</span>
+      <button className="toast-close" onClick={onClose} aria-label="Close notification">×</button>
+    </div>
+  );
+};
+
+export default Toast;
