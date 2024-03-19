@@ -1,0 +1,38 @@
+name: CD Pipeline - EC2 Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.repository == 'meenaksh06/shopsmart' # Only run on actual deployed repo, avoid forks
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /app/shopsmart
+            
+            # Pull latest changes
+            git pull origin main
+            
+            # Setup Backend
+            cd server
+            npm ci
+            npx prisma generate
+            npx prisma migrate deploy
+            
+            # Setup Frontend
+            cd ../client
+            npm ci
+            npm run build
+            
+            # PM2 Restart
+            cd ..
+            pm2 restart ecosystem.config.js --env production
