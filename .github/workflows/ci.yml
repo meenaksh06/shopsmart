@@ -109,6 +109,7 @@ jobs:
           DATABASE_URL: file:./dev.db
           JWT_SECRET: testing_secret
           PORT: 5001
+          CLIENT_URL: http://localhost:4173
 
       - name: Wait for backend to be ready
         run: npx --yes wait-on http://localhost:5001/api/health --timeout 30000
