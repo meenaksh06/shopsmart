@@ -40,7 +40,7 @@ const HomePage = () => {
           <div className="hero-stats">
             <div className="stat"><strong>100+</strong><span>Products</span></div>
             <div className="stat"><strong>3</strong><span>Categories</span></div>
-            <div className="stat"><strong>⭐ 4.8</strong><span>Avg Rating</span></div>
+            <div className="stat"><strong>⭐ 4.7</strong><span>Avg Rating</span></div>
           </div>
         </div>
         <div className="hero-visual" aria-hidden="true">
