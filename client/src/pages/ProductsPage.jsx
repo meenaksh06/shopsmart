@@ -56,62 +56,70 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="products-page">
-      <div className="products-header">
+    <div className="products-page" style={{ maxWidth: '1440px', margin: '0 auto', padding: '3rem 2rem' }}>
+
+      {/* Page header */}
+      <div className="products-page-header">
         <h1>All Products</h1>
-        <p>{pagination.total ? `${pagination.total} products found` : ''}</p>
+        <p>{pagination.total ? `${pagination.total} products` : ''}</p>
       </div>
 
-      {/* Filters bar */}
-      <div className="filters-bar">
-        <form className="search-form" onSubmit={handleSearch} role="search">
+      {/* Controls bar */}
+      <div className="controls-bar">
+        {/* Search */}
+        <form onSubmit={handleSearch} role="search" style={{ display: 'flex', gap: '0.5rem', flex: '0 0 auto' }}>
           <input
             type="search"
             name="search"
             defaultValue={search}
-            placeholder="Search products..."
-            className="search-input"
+            placeholder="Search products…"
             aria-label="Search products"
             id="product-search"
+            style={{ width: '220px' }}
           />
-          <button type="submit" className="btn btn-primary" id="search-btn">Search</button>
+          <button type="submit" className="btn btn-primary btn-sm" id="search-btn">Search</button>
         </form>
 
-        <div className="filter-controls">
-          <select
-            className="filter-select"
-            value={categoryId}
-            onChange={(e) => updateParam('categoryId', e.target.value)}
-            aria-label="Filter by category"
-            id="category-filter"
+        {/* Category pills */}
+        <div className="filter-pills">
+          <button
+            className={`pill ${categoryId === '' ? 'active' : ''}`}
+            onClick={() => updateParam('categoryId', '')}
           >
-            <option value="">All Categories</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-
-          <select
-            className="filter-select"
-            value={`${sortBy}-${order}`}
-            onChange={(e) => {
-              const [sb, o] = e.target.value.split('-');
-              const params = new URLSearchParams(searchParams);
-              params.set('sortBy', sb);
-              params.set('order', o);
-              params.delete('page');
-              setSearchParams(params);
-            }}
-            aria-label="Sort products"
-            id="sort-select"
-          >
-            <option value="createdAt-desc">Newest First</option>
-            <option value="createdAt-asc">Oldest First</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="rating-desc">Highest Rated</option>
-          </select>
+            All
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c.id}
+              className={`pill ${categoryId === String(c.id) ? 'active' : ''}`}
+              onClick={() => updateParam('categoryId', String(c.id))}
+            >
+              {c.name}
+            </button>
+          ))}
         </div>
+
+        {/* Sort */}
+        <select
+          className="sort-select"
+          value={`${sortBy}-${order}`}
+          onChange={(e) => {
+            const [sb, o] = e.target.value.split('-');
+            const params = new URLSearchParams(searchParams);
+            params.set('sortBy', sb);
+            params.set('order', o);
+            params.delete('page');
+            setSearchParams(params);
+          }}
+          aria-label="Sort products"
+          id="sort-select"
+        >
+          <option value="createdAt-desc">Newest</option>
+          <option value="createdAt-asc">Oldest</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+          <option value="rating-desc">Top Rated</option>
+        </select>
       </div>
 
       {/* Products grid */}
@@ -119,8 +127,9 @@ const ProductsPage = () => {
         <LoadingSpinner text="Loading products..." />
       ) : products.length === 0 ? (
         <div className="empty-state">
-          <p>🔍 No products found.</p>
-          <button className="btn btn-outline" onClick={() => setSearchParams({})}>Clear filters</button>
+          <h2>No Products Found</h2>
+          <p>Try adjusting your search or filters.</p>
+          <button className="btn btn-outline" onClick={() => setSearchParams({})}>Clear Filters</button>
         </div>
       ) : (
         <div className="products-grid" data-testid="products-grid">
@@ -130,11 +139,15 @@ const ProductsPage = () => {
 
       {/* Pagination */}
       {pagination.pages > 1 && (
-        <div className="pagination" role="navigation" aria-label="Product pages">
+        <div
+          role="navigation"
+          aria-label="Product pages"
+          style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '3rem' }}
+        >
           {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
-              className={`page-btn ${p === page ? 'active' : ''}`}
+              className={`pill ${p === page ? 'active' : ''}`}
               onClick={() => {
                 const params = new URLSearchParams(searchParams);
                 params.set('page', p);

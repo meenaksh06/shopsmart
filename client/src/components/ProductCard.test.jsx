@@ -29,7 +29,7 @@ const mockProduct = {
   rating: 4.5,
   reviewCount: 100,
   imageUrl: 'test.jpg',
-  category: { name: 'Test Category' }
+  category: { name: 'Test Category' },
 };
 
 describe('ProductCard Component', () => {
@@ -49,7 +49,7 @@ describe('ProductCard Component', () => {
     expect(screen.getByText('(100)')).toBeInTheDocument();
   });
 
-  it('shows out of stock badge when stock is 0 and disables button', () => {
+  it('shows out-of-stock badge when stock is 0', () => {
     AuthContext.useAuth.mockReturnValue({ isAuthenticated: true });
     CartContext.useCart.mockReturnValue({ addToCart: vi.fn() });
 
@@ -59,8 +59,11 @@ describe('ProductCard Component', () => {
       </BrowserRouter>
     );
 
+    // Badge text should be present
     expect(screen.getAllByText('Out of Stock').length).toBeGreaterThan(0);
-    expect(screen.getByRole('button', { name: /Add Test Product to cart/i })).toBeDisabled();
+    // The disabled fallback button (in card footer for out-of-stock items)
+    const outOfStockBtn = screen.getByRole('button', { name: /out of stock/i });
+    expect(outOfStockBtn).toBeDisabled();
   });
 
   it('redirects to login if not authenticated when adding to cart', async () => {
@@ -73,6 +76,7 @@ describe('ProductCard Component', () => {
       </BrowserRouter>
     );
 
+    // The add-to-cart button is inside the overlay; click it directly via aria-label
     fireEvent.click(screen.getByRole('button', { name: /Add Test Product to cart/i }));
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });

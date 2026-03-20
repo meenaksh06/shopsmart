@@ -1,13 +1,20 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { itemCount } = useCart();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -16,13 +23,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar" role="navigation" aria-label="Main navigation">
+    <nav className={`navbar${scrolled ? ' scrolled' : ''}`} role="navigation" aria-label="Main navigation">
       <div className="navbar-container">
-        <Link to="/" className="navbar-brand" aria-label="ShopSmart Home">
-          <span className="brand-icon">🛍️</span>
-          <span className="brand-text">ShopSmart</span>
-        </Link>
 
+        {/* Left: Navigation Links */}
         <div className="navbar-links">
           <NavLink to="/products" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Products
@@ -40,6 +44,13 @@ const Navbar = () => {
           )}
         </div>
 
+        {/* Center: Brand Logo */}
+        <Link to="/" className="navbar-brand" aria-label="ShopSmart Home">
+          <span className="brand-icon">🛍️</span>
+          <span className="brand-text">ShopSmart</span>
+        </Link>
+
+        {/* Right: Auth */}
         <div className="navbar-auth">
           {isAuthenticated ? (
             <div className="user-menu">

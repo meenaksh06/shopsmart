@@ -17,7 +17,8 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      {/* Hero */}
+
+      {/* ---- Hero ---- */}
       <section className="hero" aria-label="Hero banner">
         <div className="hero-content">
           <div className="hero-badge">✨ New Arrivals Every Week</div>
@@ -37,9 +38,9 @@ const HomePage = () => {
             </Link>
           </div>
           <div className="hero-stats">
-            <div className="stat"><strong>12+</strong><span>Products</span></div>
+            <div className="stat"><strong>100+</strong><span>Products</span></div>
             <div className="stat"><strong>3</strong><span>Categories</span></div>
-            <div className="stat"><strong>⭐ 4.6</strong><span>Avg Rating</span></div>
+            <div className="stat"><strong>⭐ 4.8</strong><span>Avg Rating</span></div>
           </div>
         </div>
         <div className="hero-visual" aria-hidden="true">
@@ -50,7 +51,15 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* ---- Trust Badges ---- */}
+      <div className="trust-badges">
+        <div className="trust-badge"><span>🚚</span> Free Shipping Over $50</div>
+        <div className="trust-badge"><span>↩️</span> Easy 30-Day Returns</div>
+        <div className="trust-badge"><span>🔒</span> Secure Checkout</div>
+        <div className="trust-badge"><span>⭐</span> 4.8 Star Reviews</div>
+      </div>
+
+      {/* ---- Categories ---- */}
       <section className="section categories-section" aria-labelledby="categories-heading">
         <div className="section-header">
           <h2 id="categories-heading">Shop by Category</h2>
@@ -60,22 +69,22 @@ const HomePage = () => {
           <Link to="/products?categoryId=1" className="category-card" id="electronics-cat">
             <span className="category-icon">💻</span>
             <strong>Electronics</strong>
-            <span>Gadgets & Tech</span>
+            <span>Gadgets &amp; Tech</span>
           </Link>
           <Link to="/products?categoryId=2" className="category-card" id="clothing-cat">
             <span className="category-icon">👗</span>
             <strong>Clothing</strong>
-            <span>Style & Fashion</span>
+            <span>Style &amp; Fashion</span>
           </Link>
           <Link to="/products?categoryId=3" className="category-card" id="home-cat">
             <span className="category-icon">🏡</span>
-            <strong>Home & Garden</strong>
-            <span>Comfort & Living</span>
+            <strong>Home &amp; Garden</strong>
+            <span>Comfort &amp; Living</span>
           </Link>
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* ---- Featured Products ---- */}
       <section className="section featured-section" aria-labelledby="featured-heading">
         <div className="section-header">
           <h2 id="featured-heading">Top Rated Products</h2>
@@ -83,6 +92,10 @@ const HomePage = () => {
         </div>
         {loading ? (
           <LoadingSpinner text="Loading products..." />
+        ) : featured.length === 0 ? (
+          <div className="empty-state" style={{ border: 'none', padding: '2rem 0' }}>
+            <p>No products found. Check back soon!</p>
+          </div>
         ) : (
           <div className="products-grid">
             {featured.map((p) => <ProductCard key={p.id} product={p} />)}
@@ -90,16 +103,17 @@ const HomePage = () => {
         )}
       </section>
 
-      {/* CTA Banner */}
+      {/* ---- CTA Banner ---- */}
       <section className="cta-banner" aria-label="Sign up call to action">
         <div className="cta-content">
           <h2>Ready to start shopping?</h2>
-          <p>Create a free account and get access to exclusive deals.</p>
+          <p>Create a free account and get access to exclusive deals and early access to new arrivals.</p>
           <Link to="/register" className="btn btn-primary btn-lg" id="cta-register-btn">
-            Create Account
+            Create Free Account
           </Link>
         </div>
       </section>
+
     </div>
   );
 };
