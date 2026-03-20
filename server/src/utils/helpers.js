@@ -1,10 +1,10 @@
 const formatPrice = (price) => {
-  if (typeof price !== 'number' || isNaN(price)) return '$0.00';
+  if (typeof price !== 'number' || isNaN(price)) {return '$0.00';}
   return `$${price.toFixed(2)}`;
 };
 
 const calculateOrderTotal = (items) => {
-  if (!Array.isArray(items)) return 0;
+  if (!Array.isArray(items)) {return 0;}
   return items.reduce((sum, item) => {
     const price = typeof item.price === 'number' ? item.price : 0;
     const qty = typeof item.quantity === 'number' ? item.quantity : 0;
@@ -13,7 +13,7 @@ const calculateOrderTotal = (items) => {
 };
 
 const calculateCartTotal = (cartItems) => {
-  if (!Array.isArray(cartItems)) return 0;
+  if (!Array.isArray(cartItems)) {return 0;}
   return cartItems.reduce((sum, item) => {
     const price = item.product?.price ?? 0;
     const qty = item.quantity ?? 0;

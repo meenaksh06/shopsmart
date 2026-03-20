@@ -1,5 +1,5 @@
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body } = require('express-validator');
 const { PrismaClient } = require('@prisma/client');
 const { authenticate, authorize } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
@@ -21,11 +21,11 @@ router.get('/', async (req, res, next) => {
         { description: { contains: search } },
       ];
     }
-    if (categoryId) where.categoryId = parseInt(categoryId);
+    if (categoryId) {where.categoryId = parseInt(categoryId);}
     if (minPrice || maxPrice) {
       where.price = {};
-      if (minPrice) where.price.gte = parseFloat(minPrice);
-      if (maxPrice) where.price.lte = parseFloat(maxPrice);
+      if (minPrice) {where.price.gte = parseFloat(minPrice);}
+      if (maxPrice) {where.price.lte = parseFloat(maxPrice);}
     }
 
     const allowedSortFields = ['price', 'rating', 'createdAt', 'name'];
@@ -68,7 +68,7 @@ router.get('/:id', async (req, res, next) => {
       where: { id: parseInt(req.params.id) },
       include: { category: true },
     });
-    if (!product) return res.status(404).json({ error: 'Product not found' });
+    if (!product) {return res.status(404).json({ error: 'Product not found' });}
     res.json({ product });
   } catch (error) {
     next(error);
@@ -126,14 +126,14 @@ router.put(
     try {
       const { name, description, price, stock, categoryId, imageUrl, rating, reviewCount } = req.body;
       const data = {};
-      if (name !== undefined) data.name = name;
-      if (description !== undefined) data.description = description;
-      if (price !== undefined) data.price = parseFloat(price);
-      if (stock !== undefined) data.stock = parseInt(stock);
-      if (categoryId !== undefined) data.categoryId = parseInt(categoryId);
-      if (imageUrl !== undefined) data.imageUrl = imageUrl;
-      if (rating !== undefined) data.rating = parseFloat(rating);
-      if (reviewCount !== undefined) data.reviewCount = parseInt(reviewCount);
+      if (name !== undefined) {data.name = name;}
+      if (description !== undefined) {data.description = description;}
+      if (price !== undefined) {data.price = parseFloat(price);}
+      if (stock !== undefined) {data.stock = parseInt(stock);}
+      if (categoryId !== undefined) {data.categoryId = parseInt(categoryId);}
+      if (imageUrl !== undefined) {data.imageUrl = imageUrl;}
+      if (rating !== undefined) {data.rating = parseFloat(rating);}
+      if (reviewCount !== undefined) {data.reviewCount = parseInt(reviewCount);}
 
       const product = await prisma.product.update({
         where: { id: parseInt(req.params.id) },

@@ -66,6 +66,7 @@ router.post(
       }
 
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      // eslint-disable-next-line no-unused-vars
       const { password: _pw, ...userWithoutPassword } = user;
       return res.json({ user: userWithoutPassword, token });
     } catch (error) {
@@ -88,7 +89,7 @@ router.get('/me', async (req, res, next) => {
       where: { id: decoded.userId },
       select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) {return res.status(404).json({ error: 'User not found' });}
     return res.json({ user });
   } catch (error) {
     next(error);

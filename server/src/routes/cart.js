@@ -55,7 +55,7 @@ router.post(
 
       // Ensure product exists and has enough stock
       const product = await prisma.product.findUnique({ where: { id: parseInt(productId) } });
-      if (!product) return res.status(404).json({ error: 'Product not found' });
+      if (!product) {return res.status(404).json({ error: 'Product not found' });}
       if (product.stock < quantity) {
         return res.status(400).json({ error: `Only ${product.stock} units in stock` });
       }
@@ -97,7 +97,7 @@ router.put(
         where: { id: cartItemId, cart: { userId: req.user.id } },
         include: { product: true },
       });
-      if (!existing) return res.status(404).json({ error: 'Cart item not found' });
+      if (!existing) {return res.status(404).json({ error: 'Cart item not found' });}
       if (existing.product.stock < quantity) {
         return res.status(400).json({ error: `Only ${existing.product.stock} units in stock` });
       }
@@ -122,7 +122,7 @@ router.delete('/items/:id', authenticate, async (req, res, next) => {
     const existing = await prisma.cartItem.findFirst({
       where: { id: cartItemId, cart: { userId: req.user.id } },
     });
-    if (!existing) return res.status(404).json({ error: 'Cart item not found' });
+    if (!existing) {return res.status(404).json({ error: 'Cart item not found' });}
 
     await prisma.cartItem.delete({ where: { id: cartItemId } });
     res.json({ message: 'Item removed from cart' });

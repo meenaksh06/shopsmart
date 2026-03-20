@@ -37,7 +37,7 @@ describe('Auth Routes', () => {
   it('POST /api/auth/register - rejects invalid email', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({ ...testUser, email: 'notanemail', email: `invalid_${Date.now()}` });
+      .send({ ...testUser, email: 'notanemail' });
     expect(res.statusCode).toBe(422);
   });
 
