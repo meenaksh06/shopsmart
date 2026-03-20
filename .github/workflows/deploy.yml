@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.repository == 'meenaksh06/shopsmart' # Only run on actual deployed repo, avoid forks
+    if: github.repository == 'meenaksh06/shopsmart'
 
     steps:
       - name: Deploy to EC2
@@ -17,22 +17,26 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /app/shopsmart
-            
-            # Pull latest changes
+            cd /home/ubuntu/shopsmart
+
+            echo "Pulling latest code..."
             git pull origin main
-            
-            # Setup Backend
+
+            echo "Setting up backend..."
             cd server
             npm ci
             npx prisma generate
             npx prisma migrate deploy
-            
-            # Setup Frontend
+
+            echo "Building frontend..."
             cd ../client
             npm ci
             npm run build
-            
-            # PM2 Restart
-            cd ..
-            pm2 restart ecosystem.config.js --env production
+
+            echo "Restarting backend..."
+            pm2 restart backend || pm2 start src/index.js --name backend
+
+            echo "Restarting Nginx..."
+            sudo systemctl restart nginx
+
+            echo "Deployment completed"
