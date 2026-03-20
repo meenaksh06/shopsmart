@@ -30,7 +30,6 @@ jobs:
         run: |
           npx prisma generate
           npx prisma migrate deploy
-          node prisma/seed.js
         env:
           DATABASE_URL: file:./dev.db
           JWT_SECRET: testing_secret
@@ -87,7 +86,6 @@ jobs:
         run: |
           npx prisma generate
           npx prisma migrate deploy
-          node prisma/seed.js
         env:
           DATABASE_URL: file:./dev.db
           JWT_SECRET: testing_secret
@@ -113,14 +111,14 @@ jobs:
           PORT: 5001
 
       - name: Wait for backend to be ready
-        run: npx wait-on http://localhost:5001/api/health --timeout 30000
+        run: npx --yes wait-on http://localhost:5001/api/health --timeout 30000
 
       - name: Preview frontend
         working-directory: ./client
         run: npm run preview &
 
       - name: Wait for frontend to be ready
-        run: npx wait-on http://localhost:4173 --timeout 30000
+        run: npx --yes wait-on http://localhost:4173 --timeout 30000
 
       - name: Run E2E tests
         working-directory: ./client
