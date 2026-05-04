@@ -125,9 +125,11 @@ jobs:
           ECR_REPOSITORY_URL: ${{ needs.terraform.outputs.ecr_repository }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REPOSITORY_URL:$IMAGE_TAG .
-          docker push $ECR_REPOSITORY_URL:$IMAGE_TAG
-          echo "image=$ECR_REPOSITORY_URL:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          # Use the dynamic URL from Terraform, or fall back to the registry + repo name
+          REPO_URL=${ECR_REPOSITORY_URL:-$ECR_REGISTRY/shopsmart-repo}
+          docker build -t $REPO_URL:$IMAGE_TAG .
+          docker push $REPO_URL:$IMAGE_TAG
+          echo "image=$REPO_URL:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Download task definition
         run: |
