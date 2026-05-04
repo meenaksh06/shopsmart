@@ -1,5 +1,9 @@
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 resource "aws_ecr_repository" "app" {
-  name                 = "${var.project_name}-repo"
+  name                 = "${var.project_name}-repo-${random_id.suffix.hex}"
   force_delete         = true
   image_tag_mutability = "MUTABLE"
 
@@ -56,7 +60,7 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs" {
-  name              = "/ecs/${var.project_name}-logs"
+  name              = "/ecs/${var.project_name}-logs-${random_id.suffix.hex}"
   retention_in_days = 7
   skip_destroy      = false
 }
@@ -91,7 +95,7 @@ data "aws_subnets" "default" {
 }
 
 resource "aws_security_group" "ecs_tasks" {
-  name        = "${var.project_name}-sg"
+  name        = "${var.project_name}-sg-${random_id.suffix.hex}"
   description = "Allow inbound access on port 5001"
   vpc_id      = data.aws_vpc.default.id
 

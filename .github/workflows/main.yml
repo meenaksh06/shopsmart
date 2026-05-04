@@ -83,8 +83,17 @@ jobs:
         run: terraform plan -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}"
 
       - name: Terraform Apply
+        id: apply
         working-directory: ./terraform
-        run: terraform apply -auto-approve -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}"
+        run: |
+          terraform apply -auto-approve -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}"
+          echo "ecr_repository=$(terraform output -raw repository_url)" >> $GITHUB_OUTPUT
+          echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
+          echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
+    outputs:
+      ecr_repository: ${{ steps.apply.outputs.ecr_repository }}
+      ecs_service: ${{ steps.apply.outputs.ecs_service }}
+      ecs_cluster: ${{ steps.apply.outputs.ecs_cluster }}
 
   deploy:
     name: Phase 3 - Build & Deploy
@@ -111,11 +120,12 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY_URL: ${{ needs.terraform.outputs.ecr_repository }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker build -t $ECR_REPOSITORY_URL:$IMAGE_TAG .
+          docker push $ECR_REPOSITORY_URL:$IMAGE_TAG
+          echo "image=$ECR_REPOSITORY_URL:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Download task definition
         run: |
@@ -133,6 +143,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ needs.terraform.outputs.ecs_service }}
+          cluster: ${{ needs.terraform.outputs.ecs_cluster }}
           wait-for-service-stability: true
