@@ -85,13 +85,13 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}"
+        run: terraform plan -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}" -var="aws_region=${{ secrets.AWS_REGION }}"
 
       - name: Terraform Apply
         id: apply
         working-directory: ./terraform
         run: |
-          terraform apply -auto-approve -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}"
+          terraform apply -auto-approve -var="s3_bucket_name=${{ secrets.S3_BUCKET_NAME }}" -var="aws_region=${{ secrets.AWS_REGION }}"
           echo "ecr_repository=$(terraform output -raw repository_url)" >> $GITHUB_OUTPUT
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
