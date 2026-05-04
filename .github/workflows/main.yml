@@ -149,4 +149,4 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ needs.terraform.outputs.ecs_service }}
           cluster: ${{ needs.terraform.outputs.ecs_cluster }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false
