@@ -55,6 +55,11 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    outputs:
+      ecr_repository: ${{ steps.apply.outputs.ecr_repository }}
+      ecs_service: ${{ steps.apply.outputs.ecs_service }}
+      ecs_cluster: ${{ steps.apply.outputs.ecs_cluster }}
+      task_definition_family: ${{ steps.apply.outputs.task_definition_family }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -91,11 +96,6 @@ jobs:
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "task_definition_family=$(terraform output -raw task_definition_family)" >> $GITHUB_OUTPUT
-    outputs:
-      ecr_repository: ${{ steps.apply.outputs.ecr_repository }}
-      ecs_service: ${{ steps.apply.outputs.ecs_service }}
-      ecs_cluster: ${{ steps.apply.outputs.ecs_cluster }}
-      task_definition_family: ${{ steps.apply.outputs.task_definition_family }}
 
   deploy:
     name: Phase 3 - Build & Deploy
