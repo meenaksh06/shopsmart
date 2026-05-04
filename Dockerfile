@@ -30,8 +30,8 @@ COPY --from=client-builder /app/client/dist ./client/dist
 COPY --from=server-builder /app/server ./server
 WORKDIR /app/server
 
-# Install only production dependencies
-RUN npm ci --omit=dev && npx prisma generate
+# Install only production dependencies and give ownership to node user
+RUN npm ci --omit=dev && npx prisma generate && chown -R node:node /app
 
 # Use the pre-defined non-root 'node' user for security
 USER node
@@ -42,4 +42,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 EXPOSE 5001
 
-CMD ["node", "src/index.js"]
+# Run migrations and then start the server
+CMD npx prisma migrate deploy && node src/index.js
