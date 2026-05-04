@@ -8,7 +8,7 @@ on:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: shopsmart
+  ECR_REPOSITORY: shopsmart-repo
   ECS_SERVICE: shopsmart-service
   ECS_CLUSTER: shopsmart-cluster
   CONTAINER_NAME: shopsmart

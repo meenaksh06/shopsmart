@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "app" {
-  name                 = var.project_name
+  name                 = "${var.project_name}-repo"
+  force_delete         = true
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -47,15 +48,17 @@ resource "aws_ecs_task_definition" "app" {
       environment = [
         { name = "NODE_ENV", value = "production" },
         { name = "PORT", value = "5001" },
-        { name = "DATABASE_URL", value = "file:./dev.db" }
+        { name = "DATABASE_URL", value = "file:./dev.db" },
+        { name = "JWT_SECRET", value = "prod_secret_do_not_use_in_real_life" }
       ]
     }
   ])
 }
 
 resource "aws_cloudwatch_log_group" "ecs" {
-  name              = "/ecs/${var.project_name}"
+  name              = "/ecs/${var.project_name}-logs"
   retention_in_days = 7
+  skip_destroy      = false
 }
 
 resource "aws_ecs_service" "app" {
@@ -88,7 +91,7 @@ data "aws_subnets" "default" {
 }
 
 resource "aws_security_group" "ecs_tasks" {
-  name        = "${var.project_name}-ecs-tasks-sg"
+  name        = "${var.project_name}-sg"
   description = "Allow inbound access on port 5001"
   vpc_id      = data.aws_vpc.default.id
 
