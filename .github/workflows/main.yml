@@ -90,10 +90,12 @@ jobs:
           echo "ecr_repository=$(terraform output -raw repository_url)" >> $GITHUB_OUTPUT
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
+          echo "task_definition_family=$(terraform output -raw task_definition_family)" >> $GITHUB_OUTPUT
     outputs:
       ecr_repository: ${{ steps.apply.outputs.ecr_repository }}
       ecs_service: ${{ steps.apply.outputs.ecs_service }}
       ecs_cluster: ${{ steps.apply.outputs.ecs_cluster }}
+      task_definition_family: ${{ steps.apply.outputs.task_definition_family }}
 
   deploy:
     name: Phase 3 - Build & Deploy
@@ -129,14 +131,14 @@ jobs:
 
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition ${{ env.CONTAINER_NAME }} --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition ${{ needs.terraform.outputs.task_definition_family }} --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
+          container-name: shopsmart
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition

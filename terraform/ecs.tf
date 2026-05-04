@@ -13,7 +13,7 @@ resource "aws_ecr_repository" "app" {
 }
 
 resource "aws_ecs_cluster" "main" {
-  name = "${var.project_name}-cluster"
+  name = "${var.project_name}-cluster-${random_id.suffix.hex}"
 }
 
 # Use the pre-existing LabRole provided by AWS Academy/Vocareum
@@ -22,7 +22,7 @@ data "aws_iam_role" "lab_role" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family                   = var.project_name
+  family                   = "${var.project_name}-${random_id.suffix.hex}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -66,7 +66,7 @@ resource "aws_cloudwatch_log_group" "ecs" {
 }
 
 resource "aws_ecs_service" "app" {
-  name            = "${var.project_name}-service"
+  name            = "${var.project_name}-service-${random_id.suffix.hex}"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
@@ -124,4 +124,8 @@ output "ecs_service_name" {
 
 output "ecs_cluster_name" {
   value = aws_ecs_cluster.main.name
+}
+
+output "task_definition_family" {
+  value = aws_ecs_task_definition.app.family
 }
