@@ -72,6 +72,12 @@ resource "aws_ecs_service" "app" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = "shopsmart"
+    container_port   = 5001
+  }
+
   network_configuration {
     subnets          = data.aws_subnets.default.ids
     security_groups  = [aws_security_group.ecs_tasks.id]
@@ -100,10 +106,10 @@ resource "aws_security_group" "ecs_tasks" {
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
-    protocol    = "tcp"
-    from_port   = 5001
-    to_port     = 5001
-    cidr_blocks = ["0.0.0.0/0"]
+    protocol        = "tcp"
+    from_port       = 5001
+    to_port         = 5001
+    security_groups = [aws_security_group.alb.id]
   }
 
   egress {

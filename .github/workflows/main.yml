@@ -96,6 +96,7 @@ jobs:
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "task_definition_family=$(terraform output -raw task_definition_family)" >> $GITHUB_OUTPUT
+          echo "alb_url=http://$(terraform output -raw alb_dns_name)" >> $GITHUB_OUTPUT
 
   deploy:
     name: Phase 3 - Build & Deploy
@@ -150,3 +151,10 @@ jobs:
           service: ${{ needs.terraform.outputs.ecs_service }}
           cluster: ${{ needs.terraform.outputs.ecs_cluster }}
           wait-for-service-stability: false
+
+    - name: Display App URL
+      run: |
+        echo "##################################################"
+        echo "DEPLOYMENT COMPLETE!"
+        echo "Access your app at: ${{ steps.deploy.outputs.alb_url || needs.terraform.outputs.alb_url }}"
+        echo "##################################################"
