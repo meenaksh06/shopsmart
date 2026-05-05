@@ -153,9 +153,9 @@ jobs:
           cluster: ${{ needs.terraform.outputs.ecs_cluster }}
           wait-for-service-stability: false
 
-    - name: Display App URL
-      run: |
-        echo "##################################################"
-        echo "DEPLOYMENT COMPLETE!"
-        echo "Access your app at: ${{ steps.deploy.outputs.alb_url || needs.terraform.outputs.alb_url }}"
-        echo "##################################################"
+      - name: Display App URL
+        run: |
+          echo "##################################################"
+          echo "DEPLOYMENT COMPLETE!"
+          echo "Access your app at: ${{ needs.terraform.outputs.alb_url }}"
+          echo "##################################################"
