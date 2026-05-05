@@ -79,12 +79,20 @@ npm run dev
 
 Visit `http://localhost:5173` to view the application.
 
-## CI/CD Pipeline
+## CI/CD & Infrastructure
 
-The project utilizes **GitHub Actions** for robust continuous integration and automated deployments.
+The project utilizes a modern, automated CI/CD pipeline orchestrated via **GitHub Actions** and **Terraform**:
 
-- **CI (`ci.yml`)**: Triggered on `push` and `pull_request` to the main branch. It checks out the code, installs dependencies for both client and server, runs ESLint formatters, spins up the database, and executes all unit and integration tests (Jest & Vitest). The pipeline fails if any lint rules or tests are violated, ensuring codebase health.
-- **CD (`deploy.yml`)**: Triggered on `push` to the main branch. Uses SSH to securely connect to an AWS EC2 instance, pulls the latest code, installs production dependencies, applies database migrations, builds the React frontend, and seamlessly restarts the application using PM2 without downtime.
+- **Phase 1: Automated Testing**: Triggered on every push. It runs Jest (backend) and Vitest (frontend) to ensure 100% logic coverage before proceeding.
+- **Phase 2: Infrastructure as Code (IaC)**: Uses **Terraform** to provision a secure AWS environment including an S3 Bucket, ECR Repository, and ECS Cluster.
+- **Phase 3: Containerization**: Builds a multi-stage **Docker** image optimized for production (Node-Alpine) and pushes it to Amazon ECR.
+- **Phase 4: Serverless Deployment**: Deploys the container to **AWS ECS Fargate**, providing a highly scalable and maintenance-free execution environment.
+
+## Advanced DevOps Features
+
+- **Non-Root Security**: The container runs as a dedicated `node` user to prevent privilege escalation.
+- **Dynamic Provisioning**: Terraform uses random suffixes and data sources to navigate student account restrictions and naming collisions.
+- **Automated Health Checks**: Docker health checks are integrated with ECS to ensure zero-downtime and automatic recovery from crashes.
 
 ## Deployment Steps (AWS EC2)
 
