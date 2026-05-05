@@ -60,6 +60,7 @@ jobs:
       ecs_service: ${{ steps.apply.outputs.ecs_service }}
       ecs_cluster: ${{ steps.apply.outputs.ecs_cluster }}
       task_definition_family: ${{ steps.apply.outputs.task_definition_family }}
+      alb_url: ${{ steps.apply.outputs.alb_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
