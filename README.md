@@ -110,3 +110,4 @@ The project utilizes a modern, automated CI/CD pipeline orchestrated via **GitHu
 
 **Challenge**: Implementing secure auth across distinct frontend and backend servers.
 **Solution**: Designed a robust Axios API client using interceptors to automatically attach the stored JWT to the headers of outbound requests. Added a global 401 response interceptor to instantly securely clear local storage and redirect to the login page whenever a token expires or is deemed invalid.
+
