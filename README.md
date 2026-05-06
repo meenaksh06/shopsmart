@@ -108,6 +108,6 @@ The project utilizes a modern, automated CI/CD pipeline orchestrated via **GitHu
 **Challenge**: Keeping the cart state instantly synchronized for the user while preventing race conditions when checking out (e.g. buying an item that just went out of stock).
 **Solution**: Leveraged React Context for optimistic UI updates coupled with Prisma `$transaction` operations on the backend. The backend validates real-time stock levels right before a transaction commits, safely rolling back and returning a descriptive 400 error message if stock is insufficient.
 
-**Challenge**: Implementing secure auth across distinct frontend and backend servers.
-**Solution**: Designed a robust Axios API client using interceptors to automatically attach the stored JWT to the headers of outbound requests. Added a global 401 response interceptor to instantly securely clear local storage and redirect to the login page whenever a token expires or is deemed invalid.
+Challenge: Implementing secure authentication across separate frontend and backend systems.
+Solution: Built a centralized Axios API client with request interceptors to automatically inject JWT tokens into outgoing requests. Implemented a global 401 response handler to securely purge stored credentials and trigger immediate redirection to the login flow upon token expiry or invalidation.
 
