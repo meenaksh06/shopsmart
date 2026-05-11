@@ -1,6 +1,6 @@
 # ShopSmart
 
-A production-grade, full-stack e-commerce application equipped with a React frontend, Node.js + Express backend, SQLite database (managed by Prisma ORM), AWS EC2 service and comprehensive automated testing.
+A production-grade, full-stack e-commerce application equipped with a React frontend, Node.js + Express backend, SQLite database (managed by Prisma ORM), AWS EC2 service, load Balancer and comprehensive automated testing.
 
 ## Tech Stack
 
